@@ -1,0 +1,8 @@
+/KoboRoot.tgz
+/tmp/
+/src/*.so
+
+*.o
+*.moc
+nhplugin.json
+.DS_Store

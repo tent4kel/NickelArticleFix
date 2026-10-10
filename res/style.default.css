@@ -1,0 +1,47 @@
+* {
+  font-feature-settings: "liga", "clig";
+  -webkit-font-feature-settings: "liga", "clig";
+  font-variant-ligatures: common-ligatures;
+
+  /* Hyphenation — Kobo WebKit usually supports these */
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -epub-hyphens: auto;
+  text-rendering: optimizeLegibility;
+}
+
+a, p a {
+  color: inherit !important;
+  text-decoration: none;
+  border-bottom: 0.5px solid currentColor;
+  padding-bottom: 0.05em;
+  line-height: 1.1;
+}
+
+h1, h2, h3, h4 {
+  color: inherit !important;
+  text-align: center;
+  font-family: sans-serif;
+  line-height: 1.1 !important;
+}
+
+blockquote {
+  margin: 1em 2em;
+  padding-left: 1em;
+  border-left: 2px solid #888;
+  color: #555;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+figure {
+  margin: 1.5em 0;
+  text-align: center;
+}
+
+figcaption {
+  font-size: 0.85em;
+  color: #666;
+  font-style: italic;
+  margin-top: 0.3em;
+}

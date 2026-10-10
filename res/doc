@@ -1,0 +1,41 @@
+# NickelArticleFix
+
+Runs a script on each Instapaper article once Nickel has finished downloading it: the final
+index.html is written and closed, and the article is saved to the library database. The mod logs
+one line per article to nickel-article-fix.log in this folder and starts
+
+  /bin/sh <script> <article folder>
+
+without waiting for it. The script's output is appended to fix-articles.log in this folder.
+
+Nothing in the firmware is changed on disk. If the reader software lacks the expected functions,
+the mod turns itself off and says so in the log.
+
+## Config (KOBOeReader/.adds/nickel-article-fix/config), created on first boot
+
+  enabled=1   master switch; 0 = load, log the startup line, do nothing else
+  log=0       verbose logging (thread, index.html status, script pid); problems are logged either way
+  script=/mnt/onboard/.adds/nickel-article-fix/fix-articles.sh
+              the script to run per article (absolute path)
+
+Changes take effect after a reboot.
+
+To fix articles that were already on the device, run once (e.g. over SSH):
+
+  for d in /mnt/onboard/.kobo/articles/*; do sh /mnt/onboard/.adds/nickel-article-fix/fix-articles.sh "$d"; done
+
+## Files in this folder
+
+  fix-articles.sh   installed by KoboRoot.tgz and replaced on every update; keep local edits elsewhere
+  style.default.css the CSS added to each article; installed and replaced on every update
+  style.css         optional, yours: used instead of style.default.css when present, and never
+                    touched by updates or uninstall. To customise, copy style.default.css to
+                    style.css and edit it. Applies to articles downloaded (or re-run) afterwards.
+  magick, lib/      ImageMagick 7 (ARM build), installed by KoboRoot.tgz
+  fonts/            DejaVuSans.ttf for text in SVG images, installed by KoboRoot.tgz
+  config, *.log     created by the mod
+
+## Uninstall
+
+Delete KOBOeReader/.adds/nickel-article-fix/uninstall and reboot. This removes the plugin and every
+file the mod created or installed. Anything you added yourself (such as style.css) stays, and with it the folder.
