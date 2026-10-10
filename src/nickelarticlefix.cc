@@ -216,7 +216,6 @@ static bool naf_uninstall() {
         NAF_CONFIG_DIR "/lib/libMagickWand-7.Q8.so.10",
         NAF_CONFIG_DIR "/lib/libfreetype.so.6",
         NAF_CONFIG_DIR "/lib/libjpeg.so.9",
-        NAF_CONFIG_DIR "/lib/libltdl.so.7",
         NAF_CONFIG_DIR "/lib/libpng16.so.16",
         NAF_CONFIG_DIR "/lib/libwebp.so.7",
         NAF_CONFIG_DIR "/lib/libxml2.so.2",

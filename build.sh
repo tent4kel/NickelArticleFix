@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# Adapted from NickelTypeFix's build.sh (https://github.com/nicoverbruggen/NickelTypeFix, MIT):
+# Copyright (c) 2020-2025 Patrick Gaskin (NickelMenu, NickelHook)
+# Copyright (c) 2026 Nico Verbruggen (NickelTypeFix)
+# Changes: podman cgroupfs fallback, BSD-only tar flags used only with bsdtar, NickelArticleFix paths.
 set -euo pipefail
 
 image="${NICKELTC_IMAGE:-ghcr.io/nicoverbruggen/nickelbench:recent}"

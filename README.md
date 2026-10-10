@@ -119,7 +119,21 @@ res/magick, lib/, fonts/  ImageMagick 7 for ARM, DejaVu Sans (see THIRD_PARTY.md
 res/doc, res/uninstall    installed next to the config
 ```
 
+## Credits
+
+- [NickelHook](https://github.com/pgaskin/NickelHook) by Patrick Gaskin: the hooking framework,
+  compiled into the plugin.
+- [NickelTypeFix](https://github.com/nicoverbruggen/NickelTypeFix) by Nico Verbruggen: the model
+  for this mod's safety practices, and the source of `build.sh`.
+- [nickelbench](https://github.com/nicoverbruggen/nickelbench) by Nico Verbruggen: the build toolchain
+  image and the firmware compatibility check.
+- [NickelMenu](https://github.com/pgaskin/NickelMenu) by Patrick Gaskin: the way the script is
+  launched.
+- qkqw's [MobileRead thread](https://www.mobileread.com/forums/showthread.php?t=347036): the
+  original image-fixing idea and the ImageMagick build.
+
 ## Licence
 
-MIT for this project's own files (see `LICENSE`). The bundled third-party binaries and the font
-keep their own licences; see `THIRD_PARTY.md`.
+MIT (see `LICENSE`), which also carries the notices for the parts of `build.sh` taken from
+NickelTypeFix. The bundled third-party binaries and the font keep their own licences; see
+`THIRD_PARTY.md`.
