@@ -5,7 +5,7 @@ article as soon as Nickel has finished downloading it:
 
 1. converts GIF, PNG, SVG and WebP images to JPEG, which Kobo's article view displays reliably;
 2. detects the article language (en/de/nl) and sets it, so hyphenation uses the right dictionary;
-3. adds a stylesheet (ligatures, hyphenation, quieter links, centred headings, styled quotes and figures).
+3. adds a stylesheet (ligatures, hyphenation, centred headings readable in dark mode, styled quotes and figures).
 
 No button to press and no NickelMenu entry: every article is fixed in the background right after it
 arrives.

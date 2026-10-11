@@ -1,37 +1,35 @@
-* {
-  font-feature-settings: "liga", "clig";
-  -webkit-font-feature-settings: "liga", "clig";
-  font-variant-ligatures: common-ligatures;
+/*
+ * Added to each article's index.html. Nickel wraps the article in its own page with
+ * instapaper.css (same level as this file) and adds a reader stylesheet built from the reading
+ * settings. Its !important rules (link colour and underline, body/p line height, margins,
+ * a chosen font, a chosen alignment, dark-mode colours) beat anything here, so this file
+ * doesn't try to style those. Kobo's WebKit only knows the -webkit- forms of the properties
+ * below.
+ */
 
-  /* Hyphenation — Kobo WebKit usually supports these */
-  hyphens: auto;
+* {
+  -webkit-font-feature-settings: "liga", "clig";
+  -webkit-font-variant-ligatures: common-ligatures;
   -webkit-hyphens: auto;
-  -epub-hyphens: auto;
   text-rendering: optimizeLegibility;
 }
 
-a, p a {
+/* instapaper.css makes h1-h6 black, which is black on black in dark mode. */
+h1, h2, h3, h4, h5, h6 {
   color: inherit !important;
-  text-decoration: none;
-  border-bottom: 0.5px solid currentColor;
-  padding-bottom: 0.05em;
-  line-height: 1.1;
 }
 
 h1, h2, h3, h4 {
-  color: inherit !important;
   text-align: center;
   font-family: sans-serif;
   line-height: 1.1 !important;
 }
 
+/* !important: instapaper.css's ".text_body blockquote { margin: 0 1.5% }" is more specific. */
 blockquote {
-  margin: 1em 2em;
+  margin: 1em 2em !important;
   padding-left: 1em;
   border-left: 2px solid #888;
-  color: #555;
-  font-style: italic;
-  line-height: 1.4;
 }
 
 figure {
@@ -41,7 +39,6 @@ figure {
 
 figcaption {
   font-size: 0.85em;
-  color: #666;
   font-style: italic;
   margin-top: 0.3em;
 }
