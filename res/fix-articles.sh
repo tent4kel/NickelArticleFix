@@ -5,7 +5,11 @@
 # after Nickel has written the folder. The folder must be a direct child of $ARTICLES.
 #
 # 1. Converts GIF, PNG, SVG and WebP images to JPEG, keeping each file name.
-# 2. Detects the language (en/de/nl) and sets it on the first <div lang="...">.
+# 2. Detects the language (en/de/nl), sets it on the first <div lang="..."> and as
+#    * { -webkit-locale: "xx"; } in its own one-line <style id="naf-locale"> block. The locale rule
+#    is what picks the hyphenation dictionary: Kobo's WebKit ignores lang here, and Nickel's
+#    reader stylesheet sets -webkit-locale from the database (usually "en"). Our rule wins because
+#    Nickel's isn't !important.
 # 3. Appends style.css (or style.default.css) to index.html as a <style> block, unless it
 #    already has one.
 #
@@ -106,7 +110,9 @@ if [ -f "$f" ]; then
     tmp="$f.$$.tmp"
     # The CSS file is read by awk itself (getline), so backslashes in it are kept as they are.
     if awk -v lang="$lang" -v style="$STYLE" '
+            BEGIN { locale = "<style id=\"naf-locale\">* { -webkit-locale: \"" lang "\"; }</style>" }
             !replaced && /<div lang="/ { sub(/lang="[^"]*"/, "lang=\"" lang "\""); replaced = 1 }
+            /<style id="naf-locale">/ { if (!has_locale) print locale; has_locale = 1; next }
             tolower($0) ~ /<style/ { has_style = 1 }
             { print }
             END {
@@ -115,6 +121,7 @@ if [ -f "$f" ]; then
                     while ((getline line < style) > 0) print line
                     print "</style>"
                 }
+                if (!has_locale) print locale
             }
         ' "$f" > "$tmp" && mv -f "$tmp" "$f"; then
         :
