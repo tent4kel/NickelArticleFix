@@ -5,7 +5,8 @@
 # after Nickel has written the folder. The folder must be a direct child of $ARTICLES.
 #
 # 1. Converts GIF, PNG, SVG and WebP images to JPEG, keeping each file name.
-# 2. Detects the language (en/de/nl), sets it on the first <div lang="..."> and as
+# 2. Detects the language (en/de/nl/fr/es/it/pt/tr, the ones Kobo ships hyphenation
+#    dictionaries for), sets it on the first <div lang="..."> and as
 #    * { -webkit-locale: "xx"; } in its own one-line <style id="naf-locale"> block. The locale rule
 #    is what picks the hyphenation dictionary: Kobo's WebKit ignores lang here, and Nickel's
 #    reader stylesheet sets -webkit-locale from the database (usually "en"). Our rule wins because
@@ -29,10 +30,17 @@ FONT="${SCRIPTDIR}/fonts/DejaVuSans.ttf"   # used for text in SVG images, if pre
 LD_LIBRARY_PATH="${SCRIPTDIR}/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 export LD_LIBRARY_PATH
 
-# Function words scored by detect_lang.
-DE="und der die das ist nicht ein"
-NL="en de het is niet een"
-EN="and the is not of an to"
+# Function words scored by detect_lang, one language per line, code first. Each word is in one
+# list only, so shared words (de, la, en, e, es, das, ...) can't tip the result; ties go to the
+# earlier line. Words must be lower case; UTF-8 is fine.
+LANGS="en the and of to that with it for are this
+de und der die ist nicht ein eine mit sich auch auf dem den zu dass sie wird
+nl het een niet van dat zijn ook voor op wordt naar
+fr les est et une pas qui dans pour avec sont au à
+es el los las y al pero muy su sus hay fue más
+it di che non gli della delle dei degli alla sono anche questo per nel più è
+pt não uma os em ao na nos dos pelo pela são foi isso também é
+tr ve bir bu için ile çok olarak gibi daha olan değil ama kadar sonra göre"
 
 # CSS appended to index.html (inside <style>...</style>). style.css is yours and is never
 # shipped, so updates keep it; without it, the shipped style.default.css is used.
@@ -59,21 +67,28 @@ if [ -z "$d" ] || [ ! -d "$d" ]; then
 fi
 
 # Print the language whose function words occur most often in $1; en on a tie or no match.
+# Words are split on spaces, ASCII punctuation and digits, the no-break space and the
+# typographic apostrophe (l’homme, dell’arte).
 detect_lang() {
-    best=en
-    best_score=0
-    for entry in "de:$DE" "nl:$NL" "en:$EN"; do
-        score=0
-        for w in ${entry#*:}; do
-            c=$(printf "%s" "$1" | grep -o "\\b$w\\b" | wc -l)
-            score=$((score + c))
-        done
-        if [ "$score" -gt "$best_score" ]; then
-            best_score=$score
-            best=${entry%%:*}
-        fi
-    done
-    printf "%s" "$best"
+    printf "%s\n" "$1" | awk -v langs="$LANGS" '
+        BEGIN {
+            n = split(langs, rows, "\n")
+            for (i = 1; i <= n; i++) {
+                k = split(rows[i], w, " ")
+                code[i] = w[1]
+                for (j = 2; j <= k; j++) lang_of[w[j]] = i
+            }
+        }
+        {
+            gsub(/\342\200\231|\302\240/, " ")
+            gsub(/[!-@[-`{-~]/, " ")
+            for (i = 1; i <= NF; i++) if ($i in lang_of) score[lang_of[$i]]++
+        }
+        END {
+            best = 1
+            for (i = 2; i <= n; i++) if (score[i] > score[best]) best = i
+            print code[best]
+        }'
 }
 
 # 1. Images. Nickel stores them flat in the folder, named by hash without an extension, so the
@@ -102,8 +117,10 @@ done
 f="$d/index.html"
 lang="-"
 if [ -f "$f" ]; then
-    # First 700 bytes, tags stripped, lower case; the raw start if that leaves nothing.
-    snippet="$(head -c700 "$f" | sed 's/<[^>]*>//g' | tr '[:upper:]' '[:lower:]')"
+    # First 2000 bytes without <style> blocks (ours would be read as English on a re-run), tags
+    # stripped, lower case; the raw start if that leaves nothing.
+    snippet="$(awk '/<style/ { skip = 1 } !skip { print } /<\/style>/ { skip = 0 }' "$f" |
+        head -c2000 | sed 's/<[^>]*>//g' | tr '[:upper:]' '[:lower:]')"
     [ -z "$snippet" ] && snippet="$(head -c500 "$f" | tr '[:upper:]' '[:lower:]')"
     lang="$(detect_lang "$snippet")"
 
